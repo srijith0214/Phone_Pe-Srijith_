@@ -4,6 +4,7 @@ import streamlit as st
 import psycopg2
 import pandas as pd
 import plotly.express as px
+import Database as db
 
 def visualize_district_transactions():
     """
@@ -13,19 +14,19 @@ def visualize_district_transactions():
 
     # --- Database Configuration ---
     DB_CONFIG = {
-        "host": "your_host",
-        "port": "your_port",
-        "dbname": "your_dbname",
-        "user": "your_username",
-        "password": "your_password"
+        "host": db.db_host,
+        "port": db.db_port,
+        "dbname": db.db_name,
+        "user": db.db_user,
+        "password": db.db_password
     }
 
     # --- Streamlit UI ---
     st.title("District-wise Transaction Analysis")
 
     # Sidebar inputs
-    table = st.sidebar.text_input("Enter Table Name", value="your_table_name")
-    pin_district = st.sidebar.selectbox("Group By Column", ["District_Name", "Pincode"])
+    table = st.sidebar.radio("Enter Table Name",["top_transaction_summary_pin","top_transaction_summary"])
+    pin_district = st.sidebar.selectbox("Group By Column", ["Pincode","District_Name"])
     high_low = st.sidebar.selectbox("Sort Order", ["DESC", "ASC"])
     limit = st.sidebar.slider("Number of Top Records", min_value=5, max_value=50, value=10)
     metric = st.radio("Select Metric to Visualize", ["Amount", "Transactions"])
@@ -34,9 +35,9 @@ def visualize_district_transactions():
     query = f"""
         SELECT
             "State",
-            "{pin_district}" AS Group_Column,
-            SUM("Transacion_count") AS total_transactions,
-            SUM("Transacion_amount") AS total_amount
+            "{pin_district}" AS "{pin_district}",
+            SUM("Transaction_count") AS total_transactions,
+            SUM("Transaction_amount") AS total_amount
         FROM
             {table}
         GROUP BY
@@ -51,9 +52,9 @@ def visualize_district_transactions():
         connection = psycopg2.connect(**DB_CONFIG)
         cursor = connection.cursor()
         df = pd.read_sql_query(query, connection)
+        print(df)
     except Exception as e:
         st.error(f"Database error: {e}")
-        df = pd.DataFrame()
     finally:
         if cursor:
             cursor.close()
@@ -63,10 +64,10 @@ def visualize_district_transactions():
     # Visualization
     if not df.empty:
         if metric == "Amount":
-            fig = px.bar(df, x="State", y="total_amount", color="Group_Column", text="Group_Column",
+            fig = px.bar(df, x="State", y="total_amount", color=f"{pin_district}", text=f"{pin_district}",
                          title=f"Total Transaction Amount by {pin_district}")
         else:
-            fig = px.bar(df, x="State", y="total_transactions", color="Group_Column", text="Group_Column",
+            fig = px.bar(df, x="State", y="total_transactions", color=f"{pin_district}", text=f"{pin_district}",
                          title=f"Total Transaction Count by {pin_district}")
         st.plotly_chart(fig, use_container_width=True)
     else:

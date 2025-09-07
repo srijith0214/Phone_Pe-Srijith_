@@ -2,6 +2,7 @@ import streamlit as st
 import psycopg2
 import pandas as pd
 import plotly.express as px
+import Database as db
 
 def visualize_transaction_metrics():
     """
@@ -17,11 +18,11 @@ def visualize_transaction_metrics():
 
     # --- Database Configuration ---
     DB_CONFIG = {
-        'host': 'your_host',         # e.g., 'localhost'
-        'port': 'your_port',         # e.g., '5432'
-        'dbname': 'your_database',   # e.g., 'transactions_db'
-        'user': 'your_username',     # e.g., 'admin'
-        'password': 'your_password'  # e.g., 'securepassword'
+        "host": db.db_host,
+        "port": db.db_port,
+        "dbname": db.db_name,
+        "user": db.db_user,
+        "password": db.db_password
     }
 
     # --- SQL Query ---
@@ -56,7 +57,7 @@ def visualize_transaction_metrics():
 
             # Display the raw data
             st.subheader("Transaction Metrics Summary")
-            st.dataframe(df)
+            # st.dataframe(df)
 
             # Create a time column for plotting
             df["Time"] = df["Year"].astype(str) + "-" + df["Quarter"].astype(str)

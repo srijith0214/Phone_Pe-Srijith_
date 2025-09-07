@@ -2,6 +2,7 @@ import streamlit as st
 import psycopg2
 import pandas as pd
 import plotly.express as px
+import Database as db
 
 def visualize_user_distribution():
     """
@@ -14,12 +15,13 @@ def visualize_user_distribution():
 
     # --- Database Configuration ---
     DB_CONFIG = {
-        'host': 'your_host',
-        'port': 'your_port',
-        'dbname': 'your_database',
-        'user': 'your_username',
-        'password': 'your_password'
+        "host": db.db_host,
+        "port": db.db_port,
+        "dbname": db.db_name,
+        "user": db.db_user,
+        "password": db.db_password
     }
+
 
     # --- Sidebar Inputs ---
     st.sidebar.header("Query Parameters")
@@ -29,7 +31,7 @@ def visualize_user_distribution():
 
     # --- SQL Query Construction ---
     if plot_level == 'State':
-        query = """
+        query = f"""
         SELECT "State", SUM("registeredUsers") AS total_users
         FROM user_summary
         GROUP BY "State"
@@ -90,15 +92,15 @@ def visualize_user_distribution():
             'tripura': 'Tripura',
             'uttar-pradesh': 'Uttar Pradesh',
             'west-bengal': 'West Bengal',
-            'andaman-and-nicobar-islands': 'Andaman & Nicobar',
-            'dadra-and-nagar-haveli-and-daman-and-diu': 'Dadra and Nagar Haveli and Daman and Diu',
+            'andaman-&-nicobar-islands': 'Andaman & Nicobar',
+            'dadra-&-nagar-haveli-&-daman-&-diu': 'Dadra and Nagar Haveli and Daman and Diu',
             'delhi': 'Delhi',
             'lakshadweep': 'Lakshadweep',
             'jammu-&-kashmir': 'Jammu & Kashmir',
             'ladakh': 'Ladakh'
         }
         df['State'] = df['State'].replace(state_mapping)
-
+        print(df['State'])
         # Choropleth map
         fig = px.choropleth(
             df,

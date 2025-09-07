@@ -2,7 +2,7 @@ import streamlit as st
 import psycopg2
 import pandas as pd
 import plotly.express as px
-
+import Database as db
 def visualize_insurance_data():
     """
     Streamlit app function to visualize PhonePe insurance transactions by state.
@@ -16,12 +16,13 @@ def visualize_insurance_data():
     # --- Database Configuration ---
     # Replace these values with your actual database credentials
     DB_CONFIG = {
-        'host': 'your_host',         # e.g., 'localhost'
-        'port': 'your_port',         # e.g., '5432'
-        'dbname': 'your_database',   # e.g., 'insurance_db'
-        'user': 'your_username',     # e.g., 'admin'
-        'password': 'your_password'  # e.g., 'securepassword'
+        "host": db.db_host,
+        "port": db.db_port,
+        "dbname": db.db_name,
+        "user": db.db_user,
+        "password": db.db_password
     }
+
 
     # --- Sidebar Inputs ---
     # Allow user to customize query parameters
@@ -60,7 +61,7 @@ def visualize_insurance_data():
 
             # Display the raw data
             st.subheader("Insurance Summary by State")
-            st.dataframe(df)
+            # st.dataframe(df)
 
             # Create a scatter plot with log-scaled x-axis
             fig = px.scatter(

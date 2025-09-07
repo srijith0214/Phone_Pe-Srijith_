@@ -1,11 +1,14 @@
 import os
 import psycopg2
+from dotenv import load_dotenv
 
+load_dotenv()
 # Fetch secrets from environment variables
 db_host = os.getenv("host")
 print("DB HOST ",db_host)
 db_port = os.getenv("port")  # Default PostgreSQL port
-db_name = os.getenv("database")
+db_name = os.getenv("dbname")
+print("db_name ",db_name)
 db_user = os.getenv("user")
 db_password = os.getenv("password")
 
@@ -19,6 +22,14 @@ try:
         password=db_password
     )
     print("✅ Connected to PostgreSQL successfully!")
+    DB_CONFIG = {
+    'host': db_host,
+    'database': db_name,
+    'user': db_name,
+    'password': db_password,
+    'port': db_port
+}
+    
 
     # Example query
     with conn.cursor() as cursor:

@@ -3,11 +3,14 @@ name: Run Python Script on Multiple Platforms
 on: [push]
 
 jobs:
-  run:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest]
+  streamlit-run:
+    # runs-on: ${{ matrix.os }}
+    # strategy:
+    #   matrix:
+    #     os: [windows-latest]
+    runs-on: windows-latest
+    env:
+      STREAMLIT_ONBOARDING_EMAIL: ""
 
     steps:
       - uses: actions/checkout@v3

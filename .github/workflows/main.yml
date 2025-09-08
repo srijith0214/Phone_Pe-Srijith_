@@ -18,7 +18,7 @@ jobs:
           python-version: '3.13.3'
 
       - name: Install dependencies
-        run: pip install psycopg2-binary
+        run: pip install psycopg2-binary,pip install streamlit
 
       - name: Run Python script
         env:
@@ -27,4 +27,4 @@ jobs:
           DB_NAME: ${{ secrets.database }}
           DB_USER: ${{ secrets.username }}
           DB_PASSWORD: ${{ secrets.password }}
-        run: python main_dashboard.py
+        run: streamlit main_dashboard.py
